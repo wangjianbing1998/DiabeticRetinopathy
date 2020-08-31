@@ -113,12 +113,14 @@ EDA是做这种任务的的必经之路，我们采用的是如下的方法论�
 - Stage 2
 	- 在stage 1的output上面继续训练 [xgboost](https://github.com/dmlc/xgboost), [svr](https://scikit-learn.org/stable/modules/generated/sklearn.svm.SVR.html)和[catboost](https://github.com/catboost/catboost)三组的LinearRegression模型
 - Stage 3
-	- 最后做一个combination
+	- 最后做一个使用bagging算法
 ### 调参
+- 参数初始化为0均值，0.01方差的万能高斯分布
+- PCA-Whitening
+- 梯度也做了归一化
+- 本来想着做一下梯度clip,后来训练到200 epoch的时候loss就变成nan了，可能是自己弄错了clip的方式，就没用了
 
-- 主要是调整learning rate
-
-
+- 主要是调整learning rate，decay_rate=0.09, decay_iteration=10
 ![](images/Fold-1.png)
 
 - 在Fold 1的时候, lr =1e0-6时候最合适
@@ -160,7 +162,9 @@ EDA是做这种任务的的必经之路，我们采用的是如下的方法论�
 
 # 错误分析
 一个优秀的solution少不了细致的错误分析，通用的error analysis流程我总结为：
+
 错误分析->发现改进点/新特征->训练新模型->错误分析（循环下去）
+
 遗憾的是，由于缺乏专业知识，我们很难看出来不同label的眼球的评判标准，这也影响了我们继续深挖特征和预处理。
 
 
